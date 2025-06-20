@@ -30,8 +30,8 @@ String Whisper::TranscribeFromBuffer(const byte* buffer, size_t length) {
 }
 
 bool Whisper::IdentifyFromBuffer(const byte* buffer, size_t len, String& speaker, String& kana, float& score) {
-  const char* host = "your-raspi.local";  // IPアドレスかmDNS名に置換
-  const int port = 8000;
+  const char* host = "192.168.10.22";  // IPアドレスかmDNS名に置換
+  const int port = 8082;
   const String boundary = "----ESP32Boundary";
 
   WiFiClient client;

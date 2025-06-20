@@ -13,6 +13,7 @@ class AudioWhisper {
   size_t GetSize() const;
 
   void Record();
+  static void CreateWavHeader(byte* header, int dataSize) ;
 };
 
 #endif // _AUDIOWHISPER_H
