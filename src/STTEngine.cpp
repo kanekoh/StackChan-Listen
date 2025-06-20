@@ -40,40 +40,40 @@ void STTEngine::setListenEngine(ListenEngine* engine) {
   listenEngine_ = engine;
 }
 
-String STTEngine::transcribeWithVAD() {
-  if (!listenEngine_) {
-    Serial.println("ListenEngine not set.");
-    return "";
-  }
+// String STTEngine::transcribeWithVAD() {
+//   if (!listenEngine_) {
+//     Serial.println("ListenEngine not set.");
+//     return "";
+//   }
 
-  std::vector<int16_t> wav_data;
-  bool detected = listenEngine_->listen(wav_data);
-  if (!detected) {
-    Serial.println("No voice detected.");
-    return "";
-  }
+//   std::vector<int16_t> wav_data;
+//   bool detected = listenEngine_->listen(wav_data);
+//   if (!detected) {
+//     Serial.println("No voice detected.");
+//     return "";
+//   }
 
-  Serial.println("Detected voice. Sending to Whisper...");
+//   Serial.println("Detected voice. Sending to Whisper...");
 
-  // WAVヘッダー付きバッファを作成
-  const int headerSize = 44;
-  size_t dataSize = wav_data.size() * sizeof(int16_t);
-  byte* buffer = new byte[dataSize + headerSize];
-  memset(buffer, 0, dataSize + headerSize);
+//   // WAVヘッダー付きバッファを作成
+//   const int headerSize = 44;
+//   size_t dataSize = wav_data.size() * sizeof(int16_t);
+//   byte* buffer = new byte[dataSize + headerSize];
+//   memset(buffer, 0, dataSize + headerSize);
 
-  // ヘッダー作成
-  AudioWhisper::CreateWavHeader(buffer, dataSize);
+//   // ヘッダー作成
+//   AudioWhisper::CreateWavHeader(buffer, dataSize);
 
-  // 音声データをコピー
-  memcpy(buffer + headerSize, wav_data.data(), dataSize);
+//   // 音声データをコピー
+//   memcpy(buffer + headerSize, wav_data.data(), dataSize);
 
-  // Whisperへ送信
-  Whisper* client = new Whisper(root_ca_openai, sttKey_.c_str());
-  String result = client->TranscribeFromBuffer(buffer, dataSize + headerSize);
-  delete client;
-  delete[] buffer;
-  return result;
-}
+//   // Whisperへ送信
+//   Whisper* client = new Whisper(root_ca_openai, sttKey_.c_str());
+//   String result = client->TranscribeFromBuffer(buffer, dataSize + headerSize);
+//   delete client;
+//   delete[] buffer;
+//   return result;
+// }
 
 STTResult STTEngine::transcribeWithSpeaker() {
   STTResult result;

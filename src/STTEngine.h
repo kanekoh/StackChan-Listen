@@ -18,7 +18,7 @@ public:
   void setListenEngine(ListenEngine* engine); // 追加
   String transcribe();
   String transcribeFromBuffer(const int16_t* buffer, size_t length);
-  String transcribeWithVAD();  // 追加: VAD付きSTT
+  // String transcribeWithVAD();  // 追加: VAD付きSTT
   STTResult transcribeWithSpeaker();
 
 private:

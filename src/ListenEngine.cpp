@@ -4,17 +4,17 @@
 #include <math.h>
 
 bool ListenEngine::begin(int sample_rate) {
-  config_.sample_rate = sample_rate;
+  // config_.sample_rate = sample_rate;
   micInput_ = new MicInput();
   micInput_->begin(sample_rate);
 
-  if (!vad_.init(config_)) {
-    Serial.println("VAD initialization failed.");
-    return false;
-  }
+  // if (!vad_.init(config_)) {
+  //   Serial.println("VAD initialization failed.");
+  //   return false;
+  // }
 
-  frameLen_ = config_.frame_length();
-  bufferLen_ = config_.sample_rate * maxSeconds_;  // 5秒分
+  // frameLen_ = config_.frame_length();
+  // bufferLen_ = config_.sample_rate * maxSeconds_;  // 5秒分
   ringBuffer_ = new int16_t[bufferLen_];
   ringHead_ = 0;
   ringCount_ = 0;
@@ -24,7 +24,7 @@ bool ListenEngine::begin(int sample_rate) {
 
 void ListenEngine::end() {
   micInput_->end();
-  vad_.deinit();
+  // vad_.deinit();
   delete[] ringBuffer_;
   delete micInput_;
 }
@@ -45,22 +45,22 @@ bool ListenEngine::listen(std::vector<int16_t>& out_wav_data) {
     }
     ringCount_ = std::min(ringCount_ + frameLen_, bufferLen_);
 
-    // VAD処理
-    auto state = vad_.process(frame);
-    if (state == simplevox::VadState::Detected) {
-      // Detected: 検出完了 → 5秒分のデータを出力
-      out_wav_data.clear();
-      out_wav_data.reserve(ringCount_);
+    // // VAD処理
+    // auto state = vad_.process(frame);
+    // if (state == simplevox::VadState::Detected) {
+    //   // Detected: 検出完了 → 5秒分のデータを出力
+    //   out_wav_data.clear();
+    //   out_wav_data.reserve(ringCount_);
 
-      size_t start = (ringHead_ + bufferLen_ - ringCount_) % bufferLen_;
-      for (size_t i = 0; i < ringCount_; ++i) {
-        size_t idx = (start + i) % bufferLen_;
-        out_wav_data.push_back(ringBuffer_[idx]);
-      }
+    //   size_t start = (ringHead_ + bufferLen_ - ringCount_) % bufferLen_;
+    //   for (size_t i = 0; i < ringCount_; ++i) {
+    //     size_t idx = (start + i) % bufferLen_;
+    //     out_wav_data.push_back(ringBuffer_[idx]);
+    //   }
 
-      delete[] frame;
-      return true;
-    }
+    //   delete[] frame;
+    //   return true;
+    // }
   }
 
   delete[] frame;

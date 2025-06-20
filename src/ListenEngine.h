@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 #include <stddef.h>
-#include "simplevox.h"
+// #include "simplevox.h"
 #include "MicInput.h"
 #include <vector>
 #include <Arduino.h>
@@ -18,8 +18,8 @@ public:
     void end();
 
 private:
-    simplevox::VadEngine vad_;
-    simplevox::VadConfig config_;
+    // simplevox::VadEngine vad_;
+    // simplevox::VadConfig config_;
     MicInput* micInput_ = nullptr;
     size_t maxSeconds_ = 5;  // 最大録音時間（秒）
     static const size_t ringBufferSize = 16000 * 5; // 5秒分 @ 16kHz
