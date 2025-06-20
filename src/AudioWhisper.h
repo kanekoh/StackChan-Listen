@@ -13,6 +13,7 @@ class AudioWhisper {
   size_t GetSize() const;
 
   void Record();
+  void Record(std::vector<int16_t>& wav_data);
   static void CreateWavHeader(byte* header, int dataSize) ;
 };
 

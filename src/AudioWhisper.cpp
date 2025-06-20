@@ -16,7 +16,10 @@ AudioWhisper::AudioWhisper() {
 }
 
 AudioWhisper::~AudioWhisper() {
-  delete record_buffer;
+  if (record_buffer) {
+    ::heap_caps_free(record_buffer);
+    record_buffer = nullptr;
+  }
 }
 
 size_t AudioWhisper::GetSize() const {
@@ -103,5 +106,26 @@ void AudioWhisper::Record() {
     auto data = &wavData[rec_record_idx * record_length];
     M5.Mic.record(data, record_length, record_samplerate);
   }
+  M5.Mic.end();
+}
+
+void AudioWhisper::Record(std::vector<int16_t>& wav_data) {
+  M5.Mic.begin();
+
+  constexpr int sampleRate = 16000;
+  constexpr int durationMs = 5000;
+  constexpr int totalSamples = (sampleRate * durationMs) / 1000;
+  constexpr int chunkSize = 160; // 10ms相当（任意）
+
+  wav_data.clear();
+  wav_data.reserve(totalSamples);
+
+  std::vector<int16_t> chunk(chunkSize);
+
+  for (int i = 0; i < totalSamples; i += chunkSize) {
+    M5.Mic.record(chunk.data(), chunkSize, sampleRate);
+    wav_data.insert(wav_data.end(), chunk.begin(), chunk.end());
+  }
+
   M5.Mic.end();
 }

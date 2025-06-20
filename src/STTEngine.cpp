@@ -74,7 +74,6 @@ void STTEngine::setListenEngine(ListenEngine* engine) {
 //   delete[] buffer;
 //   return result;
 // }
-
 STTResult STTEngine::transcribeWithSpeaker() {
   STTResult result;
   result.text = "";
@@ -82,19 +81,18 @@ STTResult STTEngine::transcribeWithSpeaker() {
   result.kana = "";
   result.score = 0;
 
-  if (!listenEngine_) {
-    Serial.println("ListenEngine not set.");
-    return result;
-  }
-
+  // AudioWhisper で録音
+  AudioWhisper* audio = new AudioWhisper();
   std::vector<int16_t> wav_data;
-  bool detected = listenEngine_->listen(wav_data);
-  if (!detected) {
-    Serial.println("No voice detected.");
+  audio->Record(wav_data);  // ★←ここで録音（AudioWhisperが対応していれば）
+  delete audio;
+
+  if (wav_data.empty()) {
+    Serial.println("❌ No audio recorded.");
     return result;
   }
 
-  Serial.println("Detected voice. Sending to Whisper and Identify...");
+  Serial.println("🎧 Sending audio to Whisper and Identify...");
 
   const int headerSize = 44;
   size_t dataSize = wav_data.size() * sizeof(int16_t);
@@ -104,13 +102,13 @@ STTResult STTEngine::transcribeWithSpeaker() {
   AudioWhisper::CreateWavHeader(buffer, dataSize);
   memcpy(buffer + headerSize, wav_data.data(), dataSize);
 
-  // Whisper
+  // Whisper で音声認識
   Whisper* whisperClient = new Whisper(root_ca_openai, sttKey_.c_str());
   result.text = whisperClient->TranscribeFromBuffer(buffer, dataSize + headerSize);
   delete whisperClient;
 
-  // Identify
-  Whisper* identifyClient = new Whisper(root_ca_openai, sttKey_.c_str());  // 再利用でもOK
+  // Whisper で話者識別
+  Whisper* identifyClient = new Whisper(root_ca_openai, sttKey_.c_str());
   if (!identifyClient->IdentifyFromBuffer(buffer, dataSize + headerSize, result.speaker, result.kana, result.score)) {
     Serial.println("❌ Identify failed.");
   } else {
