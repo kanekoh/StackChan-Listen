@@ -1,6 +1,5 @@
 #include <M5Unified.h>
 #include "AudioWhisper.h"
-#include <vector>  // ← これを追加
 
 //constexpr size_t record_number = 300/2;
 constexpr size_t record_number = 400;
@@ -17,10 +16,7 @@ AudioWhisper::AudioWhisper() {
 }
 
 AudioWhisper::~AudioWhisper() {
-  if (record_buffer) {
-    ::heap_caps_free(record_buffer);
-    record_buffer = nullptr;
-  }
+  delete record_buffer;
 }
 
 size_t AudioWhisper::GetSize() const {
