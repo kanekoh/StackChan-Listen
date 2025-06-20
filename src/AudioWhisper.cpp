@@ -1,5 +1,6 @@
 #include <M5Unified.h>
 #include "AudioWhisper.h"
+#include <vector>  // ← これを追加
 
 //constexpr size_t record_number = 300/2;
 constexpr size_t record_number = 400;

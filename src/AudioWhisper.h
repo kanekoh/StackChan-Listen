@@ -2,6 +2,7 @@
 #define _AUDIOWHISPER_H
 
 #include "AudioWhisper.h"
+#include <vector>  // ← これを追加
 
 class AudioWhisper {
   byte* record_buffer;
