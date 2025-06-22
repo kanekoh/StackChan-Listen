@@ -1,8 +1,12 @@
 // MicInput.cpp
 #include "MicInput.h"
 #include <M5Unified.h>
+#include "I2SBlockingGuard.h"
+
+static I2SBlockingGuard* micGuard = nullptr;
 
 void MicInput::begin(int sampleRate) {
+    micGuard = new I2SBlockingGuard(I2SMode::Recording);
     sample_rate_ = sampleRate;
     M5.Mic.begin();
 }
@@ -13,4 +17,6 @@ bool MicInput::readFrame(int16_t* buffer, size_t length) {
 
 void MicInput::end() {
     M5.Mic.end();
+    delete micGuard;  
+    micGuard = nullptr;
 }

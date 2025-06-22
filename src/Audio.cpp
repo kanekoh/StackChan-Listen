@@ -1,5 +1,6 @@
 #include <M5Unified.h>
 #include "Audio.h"
+#include "I2SBlockingGuard.h"
 
 Audio::Audio() {
   wavData = (typeof(wavData))heap_caps_malloc(record_size * sizeof(int16_t), MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT);
@@ -61,6 +62,7 @@ void Audio::CreateWavHeader(byte* header, int waveDataSize){
 
 void Audio::Record() {
   CreateWavHeader(paddedHeader, wavDataSize);
+  I2SBlockingGuard guard(I2SMode::Recording);
   M5.Mic.begin();
   int rec_record_idx;
   for (rec_record_idx = 0; rec_record_idx < record_number; rec_record_idx++) {

@@ -1,5 +1,6 @@
 #include <M5Unified.h>
 #include "AudioWhisper.h"
+#include "I2SBlockingGuard.h"
 
 //constexpr size_t record_number = 300/2;
 constexpr size_t record_number = 400;
@@ -97,6 +98,7 @@ void AudioWhisper::CreateWavHeader(byte* header, int dataSize) {
 
 
 void AudioWhisper::Record() {
+  I2SBlockingGuard guard(I2SMode::Recording);
   M5.Mic.begin();
   auto *wavData = MakeHeader(record_buffer);
   for (int rec_record_idx = 0; rec_record_idx < record_number; ++rec_record_idx) {
@@ -107,6 +109,7 @@ void AudioWhisper::Record() {
 }
 
 void AudioWhisper::Record(std::vector<int16_t>& wav_data) {
+  I2SBlockingGuard guard(I2SMode::Recording);
   M5.Mic.begin();
 
   constexpr int sampleRate = 16000;
