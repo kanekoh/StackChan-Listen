@@ -112,6 +112,8 @@ STTResult STTEngine::transcribeWithSpeaker() {
   if (!identifyClient->IdentifyFromBuffer(buffer, dataSize + headerSize, result.speaker, result.kana, result.score)) {
     Serial.println("❌ Identify failed.");
   } else {
+    if (result.speaker.isEmpty()) result.speaker = "unknown";
+    if (result.kana.isEmpty()) result.kana = "ななしのごんべ";
     Serial.printf("🧑 話者: %s (%s), score=%.2f\n", result.speaker.c_str(), result.kana.c_str(), result.score);
   }
   delete identifyClient;
