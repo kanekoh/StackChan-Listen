@@ -118,6 +118,11 @@ String Whisper::generateBoundary() {
 }
 
 String Whisper::sendMultipartRequest(const byte* data, size_t length, const String& boundary) {
+  if (!client.connect(API_HOST, API_PORT)) {
+    Serial.println("Connection failed!");
+    return "";
+  }
+    
   // multipart ヘッダとフッタを生成
   const String header =
     "--" + boundary + "\r\n"

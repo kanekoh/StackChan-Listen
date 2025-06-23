@@ -12,7 +12,8 @@ constexpr int headerSize = 44;
 
 AudioWhisper::AudioWhisper() {
   const auto size = record_size * sizeof(int16_t) + headerSize;
-  record_buffer = static_cast<byte*>(::heap_caps_malloc(size, MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT));
+  // record_buffer = static_cast<byte*>(::heap_caps_malloc(size, MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT));
+  record_buffer = (byte*)malloc(size);
   ::memset(record_buffer, 0, size);
   Serial.printf("[AudioWhisper] malloc %p (size=%d)\n", record_buffer, size);
 }
@@ -20,7 +21,8 @@ AudioWhisper::AudioWhisper() {
 AudioWhisper::~AudioWhisper() {
   Serial.printf("[AudioWhisper] free %p\n", record_buffer);
   if (record_buffer) {
-    heap_caps_free(record_buffer);
+    // heap_caps_free(record_buffer);
+    free(record_buffer);
     record_buffer = nullptr;
   }
 }
