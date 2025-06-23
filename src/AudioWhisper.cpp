@@ -14,9 +14,11 @@ AudioWhisper::AudioWhisper() {
   const auto size = record_size * sizeof(int16_t) + headerSize;
   record_buffer = static_cast<byte*>(::heap_caps_malloc(size, MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT));
   ::memset(record_buffer, 0, size);
+  Serial.printf("[AudioWhisper] malloc %p (size=%d)\n", record_buffer, size);
 }
 
 AudioWhisper::~AudioWhisper() {
+  Serial.printf("[AudioWhisper] free %p\n", record_buffer);
   if (record_buffer) {
     heap_caps_free(record_buffer);
     record_buffer = nullptr;
@@ -103,23 +105,29 @@ void AudioWhisper::CreateWavHeader(byte* header, int dataSize) {
 void AudioWhisper::Record() {
   I2SBlockingGuard guard(I2SMode::Recording);
   M5.Speaker.end(); 
+  Serial.println("[I2S] Speaker.end()");
   delay(10);
   M5.Mic.begin();
+  Serial.println("[I2S] Mic.begin()");
   auto *wavData = MakeHeader(record_buffer);
   for (int rec_record_idx = 0; rec_record_idx < record_number; ++rec_record_idx) {
     auto data = &wavData[rec_record_idx * record_length];
     M5.Mic.record(data, record_length, record_samplerate);
   }
   M5.Mic.end();
+  Serial.println("[I2S] Mic.end()");
   delay(10);
   M5.Speaker.begin(); 
+  Serial.println("[I2S] Speaker.begin()");
 }
 
 void AudioWhisper::Record(std::vector<int16_t>& wav_data) {
   I2SBlockingGuard guard(I2SMode::Recording);
   M5.Speaker.end(); 
+  Serial.println("[I2S] Speaker.end()");
   delay(10);
   M5.Mic.begin();
+  Serial.println("[I2S] Mic.begin()");
 
   constexpr int sampleRate = 16000;
   constexpr int durationMs = 5000;
@@ -137,6 +145,8 @@ void AudioWhisper::Record(std::vector<int16_t>& wav_data) {
   }
 
   M5.Mic.end();
+  Serial.println("[I2S] Mic.end()");
   delay(10);
   M5.Speaker.begin(); 
+  Serial.println("[I2S] Speaker.begin()");
 }
