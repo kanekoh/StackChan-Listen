@@ -19,7 +19,7 @@ bool MicInput::readFrame(int16_t* buffer, size_t length) {
 
 void MicInput::end() {
     M5.Mic.end();
-    delau(10);
+    delay(10);
     M5.Speaker.end(); 
     delete micGuard;  
     micGuard = nullptr;
