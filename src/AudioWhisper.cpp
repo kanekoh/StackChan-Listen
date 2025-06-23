@@ -11,7 +11,7 @@ constexpr size_t record_samplerate = 16000;
 constexpr int headerSize = 44;
 
 AudioWhisper::AudioWhisper() {
-  const auto size = record_size * sizeof(int16_t) + headerSize;
+  const auto size = record_size * sizeof(int16_t) + headerSize + 8;
   // record_buffer = static_cast<byte*>(::heap_caps_malloc(size, MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT));
   record_buffer = (byte*)malloc(size);
   ::memset(record_buffer, 0, size);

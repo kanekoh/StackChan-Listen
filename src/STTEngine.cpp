@@ -85,7 +85,6 @@ STTResult STTEngine::transcribeWithSpeaker() {
   AudioWhisper* audio = new AudioWhisper();
   std::vector<int16_t> wav_data;
   audio->Record(wav_data);  // ★←ここで録音（AudioWhisperが対応していれば）
-  delete audio;
 
   if (wav_data.empty()) {
     Serial.println("❌ No audio recorded.");
@@ -118,6 +117,7 @@ STTResult STTEngine::transcribeWithSpeaker() {
   }
   delete identifyClient;
 
+  delete audio;
   delete[] buffer;
   return result;
 }
