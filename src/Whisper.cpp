@@ -7,12 +7,10 @@ constexpr int API_PORT = 443;
 constexpr char* API_PATH = "/v1/audio/transcriptions";
 }  // namespace
 
-Whisper::Whisper(const char* root_ca, const char* api_key) : client(), key(api_key) {
+Whisper::Whisper(const char* root_ca, const char* api_key)
+  : client(), key(api_key), rootCA(root_ca) {
   client.setCACert(root_ca);
   client.setTimeout(10000); 
-  if (!client.connect(API_HOST, API_PORT)) {
-    Serial.println("Connection failed!");
-  }
 }
 
 Whisper::~Whisper() {

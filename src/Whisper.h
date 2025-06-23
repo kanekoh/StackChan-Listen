@@ -6,6 +6,8 @@
 class Whisper {
   WiFiClientSecure client;
   String key;
+  const char* rootCA;  // ★ 追加：証明書保持用
+
 public:
   Whisper(const char* root_ca, const char* api_key);
   ~Whisper();
