@@ -99,6 +99,8 @@ void AudioWhisper::CreateWavHeader(byte* header, int dataSize) {
 
 void AudioWhisper::Record() {
   I2SBlockingGuard guard(I2SMode::Recording);
+  M5.Speaker.end(); 
+  delay(10);
   M5.Mic.begin();
   auto *wavData = MakeHeader(record_buffer);
   for (int rec_record_idx = 0; rec_record_idx < record_number; ++rec_record_idx) {
@@ -106,10 +108,14 @@ void AudioWhisper::Record() {
     M5.Mic.record(data, record_length, record_samplerate);
   }
   M5.Mic.end();
+  delay(10);
+  M5.Speaker.begin(); 
 }
 
 void AudioWhisper::Record(std::vector<int16_t>& wav_data) {
   I2SBlockingGuard guard(I2SMode::Recording);
+  M5.Speaker.end(); 
+  delay(10);
   M5.Mic.begin();
 
   constexpr int sampleRate = 16000;
@@ -128,4 +134,6 @@ void AudioWhisper::Record(std::vector<int16_t>& wav_data) {
   }
 
   M5.Mic.end();
+  delay(10);
+  M5.Speaker.begin(); 
 }

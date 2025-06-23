@@ -8,6 +8,8 @@ static I2SBlockingGuard* micGuard = nullptr;
 void MicInput::begin(int sampleRate) {
     micGuard = new I2SBlockingGuard(I2SMode::Recording);
     sample_rate_ = sampleRate;
+    M5.Speaker.end(); 
+    delay(10);
     M5.Mic.begin();
 }
 
@@ -17,6 +19,8 @@ bool MicInput::readFrame(int16_t* buffer, size_t length) {
 
 void MicInput::end() {
     M5.Mic.end();
+    delau(10);
+    M5.Speaker.end(); 
     delete micGuard;  
     micGuard = nullptr;
 }
