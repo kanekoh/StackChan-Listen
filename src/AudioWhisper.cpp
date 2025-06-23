@@ -17,7 +17,10 @@ AudioWhisper::AudioWhisper() {
 }
 
 AudioWhisper::~AudioWhisper() {
-  delete record_buffer;
+  if (record_buffer) {
+    heap_caps_free(record_buffer);
+    record_buffer = nullptr;
+  }
 }
 
 size_t AudioWhisper::GetSize() const {
