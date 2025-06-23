@@ -9,11 +9,16 @@ constexpr size_t record_length = 150;
 constexpr size_t record_size = record_number * record_length;
 constexpr size_t record_samplerate = 16000;
 constexpr int headerSize = 44;
+constexpr size_t record_margin = 32;  // ← 安全のための余裕（サンプル数）
 
 AudioWhisper::AudioWhisper() {
-  const auto size = record_size * sizeof(int16_t) + headerSize + 8;
+  const auto size = (record_size + record_margin )* sizeof(int16_t) + headerSize + 8;
   // record_buffer = static_cast<byte*>(::heap_caps_malloc(size, MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT));
   record_buffer = (byte*)malloc(size);
+  if (!record_buffer) {
+    Serial.printf("[AudioWhisper] ❌ malloc failed! (size=%d)\n", size);
+    return;
+  }
   ::memset(record_buffer, 0, size);
   Serial.printf("[AudioWhisper] malloc %p (size=%d)\n", record_buffer, size);
 }
@@ -118,6 +123,9 @@ void AudioWhisper::Record() {
   }
   M5.Mic.end();
   Serial.println("[I2S] Mic.end()");
+  if (!heap_caps_check_integrity_all(true)) {
+    Serial.println("❌ Heap corruption detected after recording!");
+  }
   delay(10);
   M5.Speaker.begin(); 
   Serial.println("[I2S] Speaker.begin()");
